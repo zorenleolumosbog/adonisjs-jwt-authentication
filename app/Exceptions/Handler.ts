@@ -15,9 +15,31 @@
 
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor () {
     super(Logger)
+  }
+
+  public async handle(error: any, ctx: HttpContextContract) {
+    if (error.status === 404) {
+      return ctx.response.status(404).json({
+        error: {
+          code: 'E_RESOURCE_NOT_FOUND',
+          message: 'The resource you requested was not found'
+        }
+      })
+    }
+
+    if (error.status === 500) {
+      return ctx.response.status(500).json({
+        error: {
+          message: 'Invalid JWT token'
+        }
+      })
+    }
+
+    return super.handle(error, ctx)
   }
 }

@@ -24,12 +24,23 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.post('auth/login', 'AuthController.login')
-Route.post('auth/register', 'AuthController.register')
+Route
+  .group(() => {
+    Route.post('login', 'UsersController.login')
+  })
+  .prefix('/api')
 
-Route.resource('posts', 'PostsController').apiOnly()
-Route.resource('comments', 'CommentsController').apiOnly()
+Route
+  .group(() => {
+    Route.post('logout', 'UsersController.logout')
+    
+    Route.resource('users', 'UsersController').apiOnly()
+    Route.resource('posts', 'PostsController').apiOnly()
+    Route.resource('comments', 'CommentsController').apiOnly()
 
-Route.resource('users.posts', 'PostsController').apiOnly()
-Route.resource('posts.comments', 'CommentsController').apiOnly()
-Route.resource('users.posts.comments', 'CommentsController').apiOnly()
+    Route.resource('users.posts', 'PostsController').apiOnly()
+    Route.resource('posts.comments', 'CommentsController').apiOnly()
+    Route.resource('users.posts.comments', 'CommentsController').apiOnly()
+  })
+  .prefix('/api')
+  .middleware('jwtauth')
