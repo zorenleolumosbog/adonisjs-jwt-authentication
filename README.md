@@ -5,6 +5,7 @@ Adonis JS is a fully featured back-end framework for Node. js. It creates dynami
 Run `npm install`
 
 Copy .env.example file and rename to .env
+
 Update .env file for MySQL connection and run `node ace migration:run` for database table migrations
 
 Run `node ace list:routes` to check available posts and comments API routes
