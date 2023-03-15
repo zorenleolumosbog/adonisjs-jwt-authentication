@@ -18,13 +18,18 @@ import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
+  protected statusPages = {
+    '404': 'errors/not-found',
+    '500..599': 'errors/server-error',
+  }
+
   constructor () {
     super(Logger)
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
     if (error.status === 404) {
-      return ctx.response.status(404).json({
+      return ctx.response.status(error.status).json({
         error: {
           code: error.code,
           message: error.message
@@ -32,8 +37,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       })
     }
 
-    if (error.status === 500) {
-      return ctx.response.status(500).json({
+    if (error.status >= 500) {
+      return ctx.response.status(error.status).json({
         error: {
           code: error.code,
           message: error.message

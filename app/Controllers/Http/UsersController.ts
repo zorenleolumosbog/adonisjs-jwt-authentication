@@ -15,7 +15,7 @@ export default class UsersController {
       }
     
       async show ({ params, response }) {
-        const user = await User.find(params.id)
+        const user = await User.findOrFail(params.id)
 
         return response.json(user)
       }
