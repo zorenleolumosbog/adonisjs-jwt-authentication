@@ -59,7 +59,8 @@ export default class UsersController {
         if (!(await Hash.verify(user.password, password))) {
             return response.status(401).json({
                 error: {
-                    message: 'Invalid credentials'
+                  code: '401',
+                  message: 'Invalid credentials'
                 }
             })
         }

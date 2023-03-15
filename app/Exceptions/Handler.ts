@@ -26,8 +26,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (error.status === 404) {
       return ctx.response.status(404).json({
         error: {
-          code: 'E_RESOURCE_NOT_FOUND',
-          message: 'The resource you requested was not found'
+          code: error.code,
+          message: error.message
         }
       })
     }
@@ -35,7 +35,8 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (error.status === 500) {
       return ctx.response.status(500).json({
         error: {
-          message: 'Invalid JWT token'
+          code: error.code,
+          message: error.message
         }
       })
     }
