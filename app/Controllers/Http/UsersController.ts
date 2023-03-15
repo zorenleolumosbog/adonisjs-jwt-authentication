@@ -2,16 +2,13 @@
 import User from 'App/Models/User'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Hash from '@ioc:Adonis/Core/Hash'
-import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class UsersController {
     async index ({ request, response }) {
         const page = request.input('page', 1)
         const limit = request.input('limit', 10)
 
-        const users = await Database
-                    .from('users')
-                    .select('id', 'email', 'created_at', 'updated_at')
+        const users = await User.query()
                     .paginate(page, limit)
 
         return response.json(users)
@@ -53,14 +50,24 @@ export default class UsersController {
         const user = await User
         .query()
         .where('email', email)
-        .firstOrFail()
+        .first()
+
+        // Verify email
+        if (!user) {
+            return response.status(401).json({
+                error: {
+                  code: '401',
+                  message: 'Invalid email'
+                }
+            })
+        }
 
         // Verify password
         if (!(await Hash.verify(user.password, password))) {
             return response.status(401).json({
                 error: {
                   code: '401',
-                  message: 'Invalid credentials'
+                  message: 'Invalid password'
                 }
             })
         }
